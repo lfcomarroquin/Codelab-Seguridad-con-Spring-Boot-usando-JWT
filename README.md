@@ -2,7 +2,12 @@
 
 ## Codelab 🧪 Implementing a REST API Service
 
-Implement different REST API Services to support a store products management system, implementing each CRUD Operation with Pagination for each service (Users and Products):
+To run this project you need to add the following environment variables:
+
+- secret=theSecretOfTheApplicationToProtectInformation
+
+Implement different REST API Services to support a store products' management system, implementing each CRUD Operation
+with Pagination for each service (Users and Products):
 
 - Create
 - Read
@@ -43,6 +48,6 @@ Good code is about details. Follow each step carefully and make sure your code i
 
 ## Codelab 🧪
 
-🗣️ "I hear and I forget I see and I remember I do and I understand." Confucius
+🗣️ "I hear and, I forget I see and, I remember I do and, I understand." Confucius
 
 
