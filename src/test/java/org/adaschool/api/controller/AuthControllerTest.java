@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 public class AuthControllerTest {
@@ -81,7 +80,7 @@ public class AuthControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}"))
                     .andExpect(status().isUnauthorized());
-        } catch (ServletException e) {
+        }catch (ServletException e){
             assertTrue(e.getCause() instanceof InvalidCredentialsException);
         }
     }

@@ -5,9 +5,13 @@ import jakarta.annotation.security.RolesAllowed;
 import org.adaschool.api.data.user.RoleEnum;
 import org.adaschool.api.data.user.UserEntity;
 import org.adaschool.api.data.user.UserService;
+import org.adaschool.api.exception.UserWithEmailAlreadyRegisteredException;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 import static org.adaschool.api.utils.Constants.ADMIN_ROLE;
 
@@ -38,20 +42,30 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(null);
+        Optional<UserEntity> optionalUser = userService.findById(id);
+        return optionalUser.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(null, HttpStatusCode.valueOf(404)));
     }
 
     @PostMapping
     public ResponseEntity<UserEntity> createUser(@RequestBody UserDto userDto) {
-
-        return ResponseEntity.ok(null);
+        userService.findByEmail(userDto.getEmail()).ifPresent(user -> {
+            throw new UserWithEmailAlreadyRegisteredException();
+        });
+        String passwordHash = passwordEncoder.encode(userDto.getPassword());
+        UserEntity userEntity = new UserEntity(userDto.getName(), userDto.getEmail(), passwordHash);
+        UserEntity user = userService.save(userEntity);
+        return ResponseEntity.ok(user);
     }
 
     @RolesAllowed(ADMIN_ROLE)
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable String id) {
-
-        return ResponseEntity.ok(false);
+        Optional<UserEntity> optionalUser = userService.findById(id);
+        if (((Optional<?>) optionalUser).isEmpty()) {
+            return ResponseEntity.ok(false);
+        }
+        userService.delete(optionalUser.get());
+        return ResponseEntity.ok(true);
 
     }
 
